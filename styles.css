@@ -1,0 +1,14 @@
+/* Custom styles for the gallery and other elements */
+#image-gallery img {
+  transition: transform 0.3s ease-in-out;
+  max-width: 100%;
+  height: auto;
+  cursor: pointer;
+}
+#image-gallery img:hover {
+  transform: scale(1.1);
+}
+#image-gallery a {
+  display: block;
+  overflow: hidden;
+}

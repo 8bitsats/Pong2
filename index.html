@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pong Game</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-gray-900 text-white">
+    <header class="bg-gray-800">
+        <nav class="mx-auto flex max-w-7xl items-center justify-between p-6">
+            <div class="flex justify-center w-full">
+                <img class="h-16" src="https://res.cloudinary.com/labradojo/image/upload/v1719087888/IMG_3160_dxboxp.png" alt="Logo">
+            </div>
+        </nav>
+    </header>
+
+    <main class="flex flex-col items-center justify-center min-h-screen">
+        <div id="game-container" class="my-8">
+            <canvas id="pongCanvas" width="800" height="400"></canvas>
+        </div>
+
+        <div id="image-gallery" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
+            <!-- Images will be dynamically added here -->
+        </div>
+    </main>
+
+    <div id="popup" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+        <div class="bg-white p-8 rounded-lg text-black">
+            <h2 class="text-2xl mb-4">Congratulations!</h2>
+            <p class="mb-4">You just won a free mint!</p>
+            <button id="mintButton" class="bg-indigo-500 text-white py-2 px-4 rounded">Click here to mint a recursed</button>
+        </div>
+    </div>
+
+    <script src="pong.js" defer></script>
+</body>
+</html>
