@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Recursed Free Mint Space Shooter Game</title>
+    <style>
+        /* Existing CSS */
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        body {
+            background-color: rgb(0, 0, 0);
+            font-family: "Lucida Console";
+            user-select: none;
+            overflow: hidden;
+            padding: 0;
+            margin: 0;
+        }
+        canvas {
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+        input[type="text"] {
+            border: 1px solid rgb(255, 255, 0);
+            background-color: rgb(0, 0, 0);
+            margin-left: calc(5% - 2px);
+            color: rgb(255, 255, 255);
+            font-size: min(2vh, 2.5vw);
+            height: min(3vh, 3.75vw);
+            font-family: "Lucida Console";
+            outline: none;
+            width: 90%;
+        }
+        .page-body {
+            transform: translate(-50%, -50%);
+            height: min(100vh, 125vw);
+            width: min(80vh, 100vw);
+            position: absolute;
+            left: 50%;
+            top: 50%;
+        }
+        .game-body {
+            border-radius: min(1vh, 2vw);
+            border: 1px solid rgb(255, 255, 0);
+            transform: translate(-50%, -50%);
+            background-color: rgb(0, 0, 0);
+            height: min(90vh, 112.5vw);
+            width: min(72vh, 90vw);
+            position: absolute;
+            display: none;
+            left: 50%;
+            top: 50%;
+        }
+        .main-menu {
+            border-radius: min(1vh, 2vw);
+            border: 1px solid rgb(255, 255, 0);
+            transform: translate(-50%, -50%);
+            background-color: rgb(0, 0, 0);
+            padding: min(2vh, 2.5vw);
+            height: min(60vh, 75vw);
+            width: min(72vh, 90vw);
+            position: absolute;
+            overflow: hidden;
+            left: 50%;
+            top: 50%;
+        }
+        .menu-window {
+            background-color: rgb(0, 0, 0);
+            position: absolute;
+            display: none;
+            height: 100%;
+            width: 100%;
+            left: 0;
+            top: 0;
+        }
+        .menu-window-head {
+            font-size: min(5vh, 6.25vw);
+            height: min(10vh, 12.5vw);
+            justify-content: center;
+            color: rgb(255, 255, 0);
+            align-items: center;
+            font-weight: bold;
+            display: flex;
+            width: 100%;
+        }
+        .menu-window-body {
+            height: max(calc(100% - 20vh), calc(100% - 25vw));
+            font-size: min(2vh, 2.5vw);
+            color: rgb(255, 255, 255);
+            width: 100%;
+        }
+        .menu-window-foot {
+            height: min(10vh, 12.5vw);
+            justify-content: center;
+            align-items: center;
+            display: flex;
+            width: 100%;
+        }
+        .how-to-text {
+            justify-content: center;
+            align-items: flex-start;
+            text-align: center;
+            display: flex;
+            height: 50%;
+            width: 100%;
+        }
+        .high-score-holder {
+            justify-content: flex-start;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 5%;
+            display: flex;
+            height: 95%;
+            width: 100%;
+        }
+        .high-score {
+            border-bottom: 1px solid rgb(255, 255, 0);
+            border-top: 1px solid rgb(255, 255, 0);
+            justify-content: center;
+            align-items: center;
+            margin-top: -1px;
+            display: flex;
+            height: 15%;
+            width: 80%;
+        }
+        .high-score-data {
+            justify-content: flex-start;
+            align-items: center;
+            overflow: hidden;
+            padding-left: 5%;
+            display: flex;
+            height: 100%;
+            width: 45%;
+        }
+        .title {
+            -webkit-text-stroke: 1px rgb(255, 255, 255);
+            font-size: min(7vh, 8.75vw);
+            justify-content: center;
+            color: rgb(255, 255, 0);
+            align-items: center;
+            font-weight: bold;
+            display: flex;
+            height: 50%;
+            width: 100%;
+        }
+        .button-holder {
+            justify-content: flex-end;
+            flex-direction: column;
+            align-items: center;
+            padding-bottom: 10%;
+            display: flex;
+            height: 40%;
+            width: 100%;
+        }
+        .init-button {
+            margin: min(1vh, 1.25vw);
+        }
+        #init-select {
+            display: block;
+        }
+        .button {
+            border: 1px solid rgb(255, 255, 0);
+            transform: translateY(0);
+            font-size: min(3vh, 3.75vw);
+            color: rgb(255, 255, 255);
+            width: min(25vh, 31.25vw);
+            height: min(5vh, 6.25vw);
+            justify-content: center;
+            border-radius: min(1vh, 2vw);
+            align-items: center;
+            cursor: pointer;
+            display: flex;
+        }
+        .button:hover {
+            transform: translateY(-1px);
+        }
+        .button:active {
+            transform: translateY(1px);
+        }
+        .selected-button {
+            border: 5px double rgb(255, 255, 0);
+        }
+        .game-msg {
+            animation: "pulse" linear infinite 1s;
+            color: rgb(255, 255, 255);
+            justify-content: center;
+            font-size: min(3vh, 6vw);
+            align-items: center;
+            text-align: center;
+            display: flex;
+            height: 100%;
+            width: 100%;
+        }
+        .data-holder {
+            height: min(7vh, 8.75vw);
+            width: min(20vh, 25vw);
+            top: min(1vh, 1.25vw);
+            position: absolute;
+        }
+        .data-title {
+            justify-content: center;
+            font-size: min(4vh, 5vw);
+            color: rgb(255, 255, 0);
+            align-items: center;
+            display: flex;
+            height: 57%;
+            width: 100%;
+        }
+        .data-value {
+            justify-content: center;
+            font-size: min(3vh, 3.75vw);
+            color: rgb(255, 255, 255);
+            align-items: center;
+            display: flex;
+            height: 43%;
+            width: 100%;
+        }
+        .new-highscore-holder {
+            background-color: rgba(0, 0, 0, 0.5);
+            position: absolute;
+            display: none;
+            height: 100%;
+            width: 100%;
+            left: 0;
+            top: 0;
+        }
+        .new-highscore-window {
+            border: 1px solid rgb(255, 255, 0);
+            transform: translate(-50%, -50%);
+            background-color: rgb(0, 0, 0);
+            position: absolute;
+            aspect-ratio: 1.5/1;
+            width: 60%;
+            left: 50%;
+            top: 50%;
+        }
+        .new-highscore-title {
+            font-size: min(3vh, 3.75vw);
+            justify-content: center;
+            height: min(8vh, 10vw);
+            color: rgb(255, 255, 0);
+            align-items: center;
+            font-weight: bold;
+            display: flex;
+            width: 100%;
+        }
+        .new-highscore-inst {
+            color: rgb(255, 255, 255);
+            justify-content: flex-start;
+            font-size: min(2vh, 2.5vw);
+            height: min(5vh, 6.25vw);
+            align-items: center;
+            font-weight: bold;
+            padding-left: 5%;
+            display: flex;
+            width: 100%;
+        }
+        .new-highscore-foot {
+            height: max(calc(100% - 13vh), calc(100% - 16.25vw));
+            justify-content: center;
+            align-items: center;
+            display: flex;
+            width: 100%;
+        }
+        #data-score {
+            left: 0;
+        }
+        #data-stage {
+            right: 0;
+        }
+
+        /* Additional CSS for new elements */
+        .game-title {
+            text-align: center;
+            color: yellow;
+            font-size: 2em;
+            margin-top: 20px;
+        }
+
+        .game-image {
+            display: block;
+            margin: 20px auto;
+            width: 80%;
+            max-width: 600px;
+        }
+
+        .congratulations-popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: black;
+            border: 2px solid yellow;
+            padding: 20px;
+            text-align: center;
+            z-index: 1000;
+        }
+
+        .congratulations-popup .button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: yellow;
+            color: black;
+            text-decoration: none;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <!-- New title and image -->
+    <div class="game-title">Recursed Free Mint Space Shooter Game</div>
+    <img class="game-image" src="https://res.cloudinary.com/labradojo/image/upload/v1718412521/Recursed/IMG_2848_aqwzi4.png" alt="Recursed Free Mint Space Shooter Game">
+
+    <div class="page-body">
+        <!-- Existing HTML content -->
+        <div class="game-body">
+            <canvas id="game"></canvas>
+            <div class="game-msg"></div>
+            <div class="data-holder" id="data-score">
+                <div class="data-title">SCORE:</div>
+                <div class="data-value"></div>
+            </div>
+            <div class="data-holder" id="data-stage">
+                <div class="data-title">STAGE:</div>
+                <div class="data-value"></div>
+            </div>
+            <div class="new-highscore-holder">
+                <div class="new-highscore-window">
+                    <div class="new-highscore-title">New Highscore</div>
+                    <div class="new-highscore-inst">Input your name:</div>
+                    <input type="text" id="new-name">
+                    <div class="new-highscore-foot">
+                        <div class="button" id="new-name-button">Confirm</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="main-menu">
+            <div class="menu-window" id="init-select">
+                <div class="title">Space Shooter</div>
+                <div class="button-holder">
+                    <div class="button init-button" id="play-button">Play</div>
+                    <div class="button init-button" id="highscore-button">Highscores</div>
+                    <div class="button init-button" id="how-to-button">Instructions</div>
+                </div>
+            </div>
+            <div class="menu-window" id="highscore">
+                <div class="menu-window-head">Highscores</div>
+                <div class="menu-window-body">
+                    <div class="high-score-holder"></div>
+                </div>
+                <div class="menu-window-foot">
+                    <div class="button" id="highscore-back">Back</div>
+                </div>
+            </div>
+            <div class="menu-window" id="how-to">
+                <div class="menu-window-head">Instructions</div>
+                <div class="menu-window-body">
+                    <div class="how-to-text" style="height: 20%; padding-top: 5%;">
+                        The planet is attacked by aliens. Your job is to take command of a space ship fleet and defeat the invaders!
+                    </div>
+                    <div class="how-to-text">
+                        Pilot your ship using Arrow Keys or 'A' and 'D'<br>
+                        Shoot using the SPACE bar<br>
+                        Kill all enemies on screen to pass to the next stage<br>
+                        If an enemy shoots or touches you, you'll lose a ship<br>
+                        If you lose all your ships you lose<br>
+                        Killing all enemies on a stage clears it<br>
+                    </div>
+                </div>
+                <div class="menu-window-foot">
+                    <div class="button" id="how-to-back">Back</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- New pop-up for congratulations -->
+    <div class="congratulations-popup" id="congratulations-popup">
+        <p>Congratulations! You just won a free mint!</p>
+        <a href="https://truffle.wtf/project/mintarecursed" class="button" target="_blank">Mint</a>
+    </div>
+
+    <script type="text/javascript">
+        // Add your existing JavaScript here
+        window.oncontextmenu = (e) => { e.preventDefault(); }
+        window.onresize = resize;
+        window.onload = initLoad;
+
+        let gameData = {};
+        function initLoad() {
+            addMenuEvents();
+            resize();
+
+            gameData.ingame = false;
+            gameData.initButton = -1;
+            gameData.images = {
+                beamImgs: [tBeam1F, tBeam2F, tBeam3U],
+                capturedShip: playerImg2,
+                ship: playerImg1,
+                enemies: [
+                    { hurt: [enemy1Hurt1, enemy1Hurt2], idle: [enemy1Idle1, enemy1Idle2] },
+                    { idle: [enemy2Idle1, enemy2Idle2] }
+                ]
+            }
+            try {
+                gameData.highscores = JSON.parse(localStorage.getItem("highscores"));
+                if (!gameData.highscores) {
+                    gameData.highscores = [];
+                    localStorage.setItem("highscores", JSON.stringify(gameData.highscores));
+                }
+            }
+            catch {
+                gameData.highscores = [];
+                localStorage.setItem("highscores", JSON.stringify(gameData.highscores));
+            }
+        }
+        function resize() {
+            let game = document.querySelector("#game");
+            game.height = Math.floor(Math.min(window.innerHeight * 0.9, window.innerWidth * 1.125));
+            game.width = Math.floor(Math.min(window.innerHeight * 0.72, window.innerWidth * 0.9));
+            gameData.height = game.height;
+            gameData.width = game.width;
+
+            if (gameData.enemies) {
+                let enemySize = gameData.height / 15;
+                for (let i = 0; i < gameData.enemies.entities.length; i++) {
+                    let currEnemy = gameData.enemies.entities[i];
+                    currEnemy.endX = currEnemy.endXIndex * enemySize + enemySize / 2
+                    if (currEnemy.type === 0) currEnemy.endY = enemySize * 2 + enemySize / 2
+                    else currEnemy.endY = enemySize * 3 + enemySize / 2 + currEnemy.endYIndex * enemySize
+                }
+            }
+        }
+        function random(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+        function angle(cx, cy, ex, ey) {
+            let dy = ey - cy;
+            let dx = ex - cx;
+            let theta = Math.atan2(dy, dx);
+            theta *= 180 / Math.PI;
+            return theta;
+        }
+
+        function addMenuEvents() {
+            let howTo = document.querySelector("#how-to");
+            let mainMenu = document.querySelector(".main-menu");
+            let highscore = document.querySelector("#highscore");
+            let initSelect = document.querySelector("#init-select");
+
+            document.querySelector("#play-button").onclick = () => { closeWindow(mainMenu, () => { initGame(true) }) }
+            document.querySelector("#how-to-back").onclick = () => { closeWindow(howTo, () => { openWindow(initSelect) }) }
+            document.querySelector("#how-to-button").onclick = () => { closeWindow(initSelect, () => { openWindow(howTo) }) }
+            document.querySelector("#highscore-back").onclick = () => { closeWindow(highscore, () => { openWindow(initSelect) }) }
+            document.querySelector("#highscore-button").onclick = () => {
+                updateHighScoreDisplay();
+                closeWindow(initSelect, () => {
+                    openWindow(highscore);
+                });
+            }
+            document.querySelector("#new-name-button").onclick = () => {
+                let nameInput = document.querySelector("#new-name");
+                if (!nameInput.value) alert("You must enter a name!");
+                else {
+                    let gameMsg = document.querySelector(".game-msg");
+                    gameMsg.innerHTML = "GAME OVER<br>Press ENTER to restart<br>Press ESC to quit";
+                    updateHighscore({ name: nameInput.value, score: gameData.player.score });
+                    closeWindow(document.querySelector(".new-highscore-holder"));
+                    gameMsg.style.display = "flex";
+                    gameData.highscore = false;
+                    nameInput.value = "";
+                }
+            }
+        }
+        function closeWindow(element, callback) {
+            element.style.animation = "fadeOut linear 0.1s";
+            element.onanimationend = () => {
+                element.style.animation = "none";
+                element.style.display = "none";
+                element.onanimationend = null;
+                if (callback) callback();
+            }
+        }
+        function openWindow(element, callback) {
+            element.style.animation = "fadeIn linear 0.1s";
+            element.style.display = "block";
+            element.onanimationend = () => {
+                let selectedButton = document.querySelector(".selected-button");
+                if (selectedButton) selectedButton.className = "button init-button";
+                gameData.initButton = -1;
+
+                element.style.animation = "none";
+                element.onanimationend = null;
+                if (callback) callback();
+            }
+        }
+
+        let gameLoopStop = false;
+        function initGame(first) {
+            gameLoopStop = false;
+            if (first) {
+                gameData.initButton = -1;
+                let selectedButton = document.querySelector(".selected-button");
+                if (selectedButton) selectedButton.className = "button init-button";
+
+                gameData.tick = 0;
+                gameData.stage = 0;
+                gameData.ingame = true;
+                gameData.paused = false;
+                gameData.started = false;
+                gameData.gameOver = false;
+                gameData.returnCraft = [];
+                gameData.projectiles = [];
+                gameData.highscore = false;
+                gameData.backParticles = [];
+                for (let i = 0; i < 50; i++) {
+                    gameData.backParticles.push({
+                        x: random(0, 100) / 100,
+                        y: random(0, 100) / 100,
+                        s: random(1, 3),
+                        r: random(1, 3)
+                    });
+                }
+                gameData.player = {
+                    dual: false, x: 0.5, score: 0, lives: 3, dirL: 0, dirR: 0, cooldown: 0, dead: false, deadPart: [], iFrames: 0,
+                    cauthInBeam: false, beamDone: false
+                }
+                gameData.enemies = {
+                    positionX: 0.5, dirX: 1, num: -1,
+                    countdown: 0, countdownToNext: -1,
+                    started: false, entities: []
+                }
+                document.querySelector(".game-msg").innerHTML = "Press SPACE to start<br>Press P to pause";
+                openWindow(document.querySelector(".game-body"));
+                document.querySelector("#data-score").children[1].innerHTML = 0;
+                document.querySelector("#data-stage").children[1].innerHTML = 1;
+            }
+            window.requestAnimationFrame((currTime) => {
+                let game = document.querySelector("#game");
+                let ctx = game.getContext("2d");
+                gameLoop(ctx, currTime, currTime);
+            });
+        }
+        function gameLoop(ctx, prevTime, currTime) {
+            let elapsedTime = currTime - prevTime;
+            if (elapsedTime > 16) {
+                updateGame(elapsedTime);
+                drawGame(ctx);
+                prevTime = currTime;
+                gameData.tick++;
+            }
+            if (!gameLoopStop) {
+                window.requestAnimationFrame((currTime) => {
+                    gameLoop(ctx, prevTime, currTime);
+                });
+            }
+        }
+        function updateGame(elapsedTime) {
+            for (let i = 0; i < gameData.backParticles.length; i++) {
+                gameData.backParticles[i].y += elapsedTime / 16000 * gameData.backParticles[i].s;
+                if (gameData.backParticles[i].y > 1) gameData.backParticles.splice(i, 1);
+                if (gameData.backParticles.length < 50) {
+                    gameData.backParticles.push({
+                        x: random(0, 100) / 100, y: 0,
+                        s: random(1, 3),
+                        r: random(1, 3)
+                    });
+                }
+            }
+
+            for (let i = 0; i < gameData.projectiles.length; i++) {
+                gameData.projectiles[i].y += gameData.projectiles[i].dir * 0.0075 * elapsedTime / 16;
+                if (gameData.projectiles[i].y < -0.5 || gameData.projectiles[i].y > 1.5) gameData.projectiles.splice(i, 1);
+            }
+
+            gameData.player.x -= gameData.player.dirL * 0.0075 * elapsedTime / 16;
+            gameData.player.x += gameData.player.dirR * 0.0075 * elapsedTime / 16;
+            if (gameData.player.x < 0) gameData.player.x = 0;
+            if (gameData.player.x > 1) gameData.player.x = 1;
+            gameData.player.cooldown--;
+            if (gameData.player.cooldown < 0) gameData.player.cooldown = 0;
+            if (gameData.player.iFrames > 0) gameData.player.iFrames--;
+
+            if (gameData.player.dead) {
+                gameData.player.deathLength--;
+                if (gameData.player.deathLength < 0) gameData.player.deathLength = 0;
+                if (gameData.player.deadPart.length != 0) {
+                    for (let i = 0; i < gameData.player.deadPart.length; i++) {
+                        gameData.player.deadPart[i].x += Math.cos(gameData.player.deadPart[i].a) * gameData.player.deadPart[i].s / 1000;
+                        gameData.player.deadPart[i].y += Math.sin(gameData.player.deadPart[i].a) * gameData.player.deadPart[i].s / 1000;
+                        gameData.player.deadPart[i].o -= 0.025;
+                        if (gameData.player.deadPart[i].o <= 0) {
+                            gameData.player.deadPart.splice(i, 1);
+                        }
+                    }
+                }
+                else {
+                    gameData.player.lives--;
+                    gameData.player.dual = false;
+                    gameData.player.deathLength = 0;
+                    if (gameData.player.lives === 0) gameEnd();
+                    else {
+                        gameData.player.iFrames = 100;
+                        gameData.player.dead = false;
+                    }
+                }
+            }
+
+            if (gameData.returnCraft.length > 0) {
+                let shipSize = gameData.height / 20;
+                let returnAngle = angle(
+                    gameData.returnCraft[0] * gameData.width,
+                    gameData.returnCraft[1] * gameData.height,
+                    gameData.player.x * gameData.width,
+                    gameData.height - shipSize * 3
+                );
+                returnAngle = returnAngle * Math.PI / 180;
+                gameData.returnCraft[0] += 0.0075 * Math.cos(returnAngle);
+                gameData.returnCraft[1] += 0.0075 * Math.sin(returnAngle);
+
+                let distX = Math.pow(((gameData.returnCraft[0] - gameData.player.x) * gameData.width), 2);
+                let distY = Math.pow(((gameData.returnCraft[1] * gameData.height) - (gameData.height - shipSize * 3)), 2);
+                let distance = Math.sqrt(distX + distY);
+                if (distance < shipSize / 2) {
+                    gameData.player.dual = true;
+                    gameData.returnCraft = [];
+                    gameData.player.lives++;
+                }
+            }
+
+            updateEnemies(elapsedTime);
+            collision();
+            checkWinCondition(gameData.player.score);
+        }
+        function updateEnemies(elapsedTime) {
+            gameData.enemies.positionX += elapsedTime / 16000 * gameData.enemies.dirX;
+            if (gameData.enemies.positionX > 0.6) {
+                gameData.enemies.positionX = 0.6;
+                gameData.enemies.dirX *= -1;
+            }
+            if (gameData.enemies.positionX < 0.4) {
+                gameData.enemies.positionX = 0.4;
+                gameData.enemies.dirX *= -1;
+            }
+            if (gameData.started) {
+                if (gameData.enemies.entities.length === 0) {
+                    if (gameData.enemies.started && gameData.player.lives > 0) {
+                        gameData.enemies.started = false;
+                        gameData.enemies.countdown = 150;
+
+                        let msg = document.querySelector(".game-msg");
+                        msg.innerHTML = "STAGE CLEARED!"
+                        msg.style.display = "flex";
+                    }
+                }
+                else {
+                    for (let i = 0; i < gameData.enemies.entities.length; i++) {
+                        let currEnemy = gameData.enemies.entities[i];
+                        let currEnemyIndex = i;
+                        if (currEnemy.hp > 0) {
+                            if (currEnemy.onHold > 0) currEnemy.onHold--;
+                            else {
+                                if (currEnemy.spawnCountdown > 0) currEnemy.spawnCountdown--;
+                                else {
+                                    let trajectory = 0;
+                                    if (!currEnemy.enterDone) {
+                                        if (currEnemy.enterIndex < currEnemy.enterTrajectory.length) {
+                                            let currX = currEnemy.initX, currY = currEnemy.initY;
+                                            for (let k = 0; k <= currEnemy.enterIndex; k++) {
+                                                currX += currEnemy.enterTrajectory[k][0];
+                                                currY += currEnemy.enterTrajectory[k][1];
+                                            }
+                                            trajectory = angle(currEnemy.x, currEnemy.y, currX, currY);
+                                            trajectory = trajectory * Math.PI / 180;
+                                            currEnemy.x += 0.0075 * Math.cos(trajectory);
+                                            currEnemy.y += 0.0075 * Math.sin(trajectory);
+                                            if (currEnemy.enterTrajectory.length > 0) {
+                                                let shipSize = gameData.height / 20;
+                                                if (currEnemy.x * gameData.width - shipSize / 2 < currX * gameData.width && currEnemy.x * gameData.width + shipSize / 2 > currX * gameData.width) {
+                                                    if (currEnemy.y * gameData.height - shipSize / 2 < currY * gameData.height && currEnemy.y * gameData.height + shipSize / 2 > currY * gameData.height) {
+                                                        currEnemy.enterIndex++;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else {
+                                            let enemySize = gameData.height / 15;
+                                            let adjustX = gameData.enemies.positionX * gameData.width - 5 * enemySize;
+                                            trajectory = angle(
+                                                currEnemy.x * gameData.width,
+                                                currEnemy.y * gameData.height,
+                                                adjustX + currEnemy.endX,
+                                                currEnemy.endY,
+                                            );
+                                            trajectory = trajectory * Math.PI / 180;
+                                            currEnemy.x += 0.0075 * Math.cos(trajectory);
+                                            currEnemy.y += 0.0075 * Math.sin(trajectory);
+
+                                            if (currEnemy.x * gameData.width - enemySize / 2 <= adjustX + currEnemy.endX + enemySize / 20 && currEnemy.x * gameData.width + enemySize / 2 >= adjustX + currEnemy.endX - enemySize / 20) {
+                                                if (currEnemy.y * gameData.height - enemySize / 2 <= currEnemy.endY + enemySize / 20 && currEnemy.y * gameData.height + enemySize / 2 >= currEnemy.endY - enemySize / 20) {
+                                                    currEnemy.enterDone = true;
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else if (currEnemy.returnExit) {
+                                        let enemySize = gameData.height / 15;
+                                        let adjustX = gameData.enemies.positionX * gameData.width - 5 * enemySize;
+                                        trajectory = angle(
+                                            currEnemy.x * gameData.width,
+                                            currEnemy.y * gameData.height,
+                                            adjustX + currEnemy.endX,
+                                            currEnemy.endY,
+                                        );
+                                        trajectory = trajectory * Math.PI / 180;
+                                        currEnemy.x += 0.0075 * Math.cos(trajectory);
+                                        currEnemy.y += 0.0075 * Math.sin(trajectory);
+
+                                        if (currEnemy.x * gameData.width - enemySize / 2 <= adjustX + currEnemy.endX + enemySize / 20 && currEnemy.x * gameData.width + enemySize / 2 >= adjustX + currEnemy.endX - enemySize / 20) {
+                                            if (currEnemy.y * gameData.height - enemySize / 2 <= currEnemy.endY + enemySize / 20 && currEnemy.y * gameData.height + enemySize / 2 >= currEnemy.endY - enemySize / 20) {
+                                                currEnemy.onScreenCount = random(1000, 2000);
+                                                currEnemy.returnExit = false;
+                                                currEnemy.exitIndex = 0;
+                                            }
+                                        }
+                                    }
+                                    else if (currEnemy.onScreenCount > 0) {
+                                        if (!currEnemy.catchInit && !currEnemy.catchFinish && !currEnemy.catchAnimation) {
+                                            let enemySize = gameData.height / 15;
+                                            let adjustX = gameData.enemies.positionX * gameData.width - 5 * enemySize;
+                                            currEnemy.x = (adjustX + currEnemy.endX) / gameData.width;
+                                            currEnemy.y = (currEnemy.endY) / gameData.height;
+                                        }
+                                        currEnemy.onScreenCount--;
+                                        if (currEnemy.canCatch) {
+                                            let canInitiate = true;
+                                            for (let k = 0; k < gameData.enemies.entities.length; k++) {
+                                                if (
+                                                    gameData.enemies.entities[k].catchInit ||
+                                                    gameData.enemies.entities[k].catchAnimation ||
+                                                    gameData.enemies.entities[k].catchFinish ||
+                                                    gameData.enemies.entities[k].caughtPlayer
+                                                ) {
+                                                    if (k != currEnemyIndex) canInitiate = false;
+                                                }
+                                            }
+                                            if (canInitiate && gameData.player.dual) canInitiate = false;
+                                            if (canInitiate) {
+                                                if (currEnemy.timeToCatch > 0) currEnemy.timeToCatch--;
+                                                else {
+                                                    if (!currEnemy.catchFinish) {
+                                                        if (!currEnemy.catchAnimation) {
+                                                            if (!currEnemy.catchInit) {
+                                                                currEnemy.catchInit = true;
+                                                                currEnemy.catchCoordX = gameData.player.x;
+                                                            }
+                                                            else if (currEnemy.catchCoordX != -1) {
+                                                                let entitySize = gameData.height / 15;
+                                                                let catchAngle = angle(
+                                                                    currEnemy.x * gameData.width,
+                                                                    currEnemy.y * gameData.height,
+                                                                    currEnemy.catchCoordX * gameData.width,
+                                                                    gameData.height - entitySize * 4.5
+                                                                );
+                                                                catchAngle = catchAngle * Math.PI / 180;
+                                                                currEnemy.x += 0.0075 * Math.cos(catchAngle);
+                                                                currEnemy.y += 0.0075 * Math.sin(catchAngle);
+
+                                                                let distX = Math.pow(((currEnemy.x - currEnemy.catchCoordX) * gameData.width), 2);
+                                                                let distY = Math.pow(((gameData.height - entitySize * 5) - currEnemy.y * gameData.height), 2);
+                                                                let distance = Math.sqrt(distX + distY);
+                                                                if (distance < entitySize / 2) {
+                                                                    currEnemy.catchAnimation = true;
+                                                                    currEnemy.catchInit = false;
+                                                                    currEnemy.catchTime = 180;
+                                                                }
+                                                            }
+                                                        }
+                                                        else {
+                                                            if (currEnemy.catchTime > 0) {
+                                                                if (!gameData.player.cauthInBeam) {
+                                                                    let entitySize = gameData.height / 15;
+                                                                    let distX = Math.pow(((gameData.player.x - currEnemy.x) * gameData.width), 2);
+                                                                    let distY = Math.pow(((gameData.height - entitySize * 3 + entitySize / 2) - currEnemy.y * gameData.height), 2);
+                                                                    let distance = Math.sqrt(distX + distY);
+
+                                                                    let beamY = entitySize * 3.5;
+                                                                    if (currEnemy.catchTime >= 160) {
+                                                                        if (currEnemy.catchTime >= 170) beamY *= 0.78;
+                                                                        else if (currEnemy.catchTime >= 160) beamY *= 0.91;
+                                                                    }
+
+                                                                    if (distance < beamY) {
+                                                                        let beamAngle = angle(
+                                                                            currEnemy.x * gameData.width,
+                                                                            currEnemy.y * gameData.height,
+                                                                            gameData.player.x * gameData.width,
+                                                                            gameData.height - entitySize * 3 + entitySize / 2
+                                                                        );
+                                                                        beamAngle = beamAngle * Math.PI / 180;
+                                                                        if (beamAngle > Math.PI / 6 * 5 - Math.PI / 2 && beamAngle < Math.PI / 6 * 7 - Math.PI / 2) {
+                                                                            gameData.player.beamY = (gameData.height - entitySize * 3 + entitySize / 2) / gameData.height;
+                                                                            gameData.player.beamX = gameData.player.x;
+                                                                            gameData.player.cauthInBeam = true;
+                                                                            gameData.player.dirL = 0;
+                                                                            gameData.player.dirR = 0;
+                                                                        }
+                                                                    }
+                                                                }
+                                                                else {
+                                                                    let beamAngle = angle(currEnemy.x, currEnemy.y, gameData.player.beamX, gameData.player.beamY);
+                                                                    beamAngle = beamAngle * Math.PI / 180;
+                                                                    gameData.player.beamX -= currEnemy.catchTime / 25000 * Math.cos(beamAngle);
+                                                                    gameData.player.beamY -= currEnemy.catchTime / 25000 * Math.sin(beamAngle);
+                                                                    let distX = Math.pow(((currEnemy.x - gameData.player.beamX) * gameData.width), 2);
+                                                                    let distY = Math.pow(((currEnemy.y - gameData.player.beamY) * gameData.height), 2);
+                                                                    let distance = Math.sqrt(distX + distY);
+                                                                    if (distance < gameData.height / 100) {
+                                                                        gameData.player.cauthInBeam = false;
+                                                                        gameData.player.lives--;
+                                                                        if (gameData.player.lives === 0) gameEnd();
+                                                                        else {
+                                                                            currEnemy.catchAnimation = false;
+                                                                            currEnemy.caughtPlayer = true;
+                                                                            gameData.player.iFrames = 100;
+                                                                            gameData.player.dead = false;
+                                                                            currEnemy.catchFinish = true;
+                                                                            currEnemy.catchTime = 0;
+                                                                        }
+                                                                    }
+                                                                }
+                                                                currEnemy.catchTime--;
+                                                            }
+                                                            else {
+                                                                currEnemy.catchAnimation = false;
+                                                                currEnemy.catchFinish = true;
+                                                            }
+                                                        }
+                                                    }
+                                                    else {
+                                                        let entitySize = gameData.height / 15;
+                                                        let adjustX = gameData.enemies.positionX * gameData.width - 5 * entitySize;
+                                                        let returnAngle = angle(
+                                                            currEnemy.x * gameData.width,
+                                                            currEnemy.y * gameData.height,
+                                                            adjustX + currEnemy.endX,
+                                                            currEnemy.endY
+                                                        );
+                                                        returnAngle = returnAngle * Math.PI / 180;
+                                                        currEnemy.x += 0.0075 * Math.cos(returnAngle);
+                                                        currEnemy.y += 0.0075 * Math.sin(returnAngle);
+                                                        let distX = Math.pow((currEnemy.x * gameData.width - (adjustX + currEnemy.endX)), 2);
+                                                        let distY = Math.pow((currEnemy.y * gameData.height - currEnemy.endY), 2);
+                                                        let distance = Math.sqrt(distX + distY);
+                                                        if (distance < entitySize / 2) {
+                                                            currEnemy.catchFinish = false;
+                                                            currEnemy.caughtPlayer = false;
+                                                            currEnemy.timeToCatch = 400;
+                                                            currEnemy.catchCoordX = -1;
+                                                            currEnemy.returnExit = true;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else {
+                                        let enemySize = gameData.height / 15;
+                                        let adjustX = gameData.enemies.positionX * gameData.width - 5 * enemySize;
+                                        let exitAngle = angle(
+                                            currEnemy.x * gameData.width,
+                                            currEnemy.y * gameData.height,
+                                            adjustX + currEnemy.exitTrajectory[currEnemy.exitIndex][0] * enemySize,
+                                            currEnemy.exitTrajectory[currEnemy.exitIndex][1] * enemySize
+                                        );
+                                        exitAngle = exitAngle * Math.PI / 180;
+                                        currEnemy.x += 0.0075 * Math.cos(exitAngle);
+                                        currEnemy.y += 0.0075 * Math.sin(exitAngle);
+                                        let distX = Math.pow((currEnemy.x * gameData.width - (adjustX + currEnemy.exitTrajectory[currEnemy.exitIndex][0] * enemySize)), 2);
+                                        let distY = Math.pow((currEnemy.y * gameData.height - currEnemy.exitTrajectory[currEnemy.exitIndex][1] * enemySize), 2);
+                                        let distance = Math.sqrt(distX + distY);
+                                        if (distance < enemySize / 2) {
+                                            currEnemy.exitIndex++;
+                                            if (currEnemy.exitIndex === currEnemy.exitTrajectory.length) gameData.enemies.entities.splice(currEnemyIndex, 1);
+                                        }
+                                    }
+
+                                    if (currEnemy.canShoot) {
+                                        let trajectory = 0;
+                                        let canShoot = true;
+                                        if (currEnemy.beamCooldown > 0) {
+                                            currEnemy.beamCooldown--;
+                                            canShoot = false;
+                                        }
+                                        else {
+                                            for (let k = 0; k < gameData.enemies.entities.length; k++) {
+                                                if (gameData.enemies.entities[k].beamCooldown > 0) {
+                                                    canShoot = false;
+                                                }
+                                            }
+                                        }
+                                        if (canShoot) {
+                                            let entitySize = gameData.height / 15;
+                                            trajectory = angle(
+                                                currEnemy.x * gameData.width,
+                                                currEnemy.y * gameData.height,
+                                                gameData.player.x * gameData.width,
+                                                gameData.height - entitySize * 3 + entitySize / 2
+                                            );
+                                            trajectory = trajectory * Math.PI / 180;
+                                            gameData.projectiles.push({
+                                                x: currEnemy.x,
+                                                y: currEnemy.y,
+                                                dir: 1,
+                                                type: currEnemy.projType,
+                                                img: gameData.images.beamImgs[currEnemy.projType][0]
+                                            });
+                                            currEnemy.beamCooldown = 200;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else {
+                            let enemySize = gameData.height / 15;
+                            let explosionSize = Math.pow((enemySize / 2), 2);
+                            if (currEnemy.explosionFrame > 0) currEnemy.explosionFrame--;
+                            else gameData.enemies.entities.splice(currEnemyIndex, 1);
+                            if (currEnemy.hp < 0) currEnemy.hp = 0;
+                        }
+                    }
+                }
+            }
+            else {
+                if (gameData.enemies.countdownToNext > 0) gameData.enemies.countdownToNext--;
+                else {
+                    if (gameData.enemies.countdown > 0) {
+                        if (gameData.enemies.countdown === 100) {
+                            let msg = document.querySelector(".game-msg");
+                            msg.style.display = "none";
+                            gameData.enemies.started = true;
+                            gameData.enemies.positionX = 0.5;
+                            gameData.enemies.dirX = 1;
+
+                            gameData.enemies.entities = [];
+                            if (gameData.stage % 5 != 0) {
+                                for (let i = 0; i < 5; i++) {
+                                    gameData.enemies.entities.push({
+                                        hp: 2,
+                                        type: 0,
+                                        img: gameData.images.enemies[0].idle[0],
+                                        hitImg: gameData.images.enemies[0].hurt[0],
+                                        explosionImg: gameData.images.enemies[0].idle[1],
+                                        explosionFrame: 25,
+                                        enterDone: false,
+                                        onHold: 300,
+                                        x: -1,
+                                        y: -1,
+                                        endXIndex: i,
+                                        endYIndex: 0,
+                                        projType: 0,
+                                        canShoot: true,
+                                        beamCooldown: 200,
+                                        canCatch: true,
+                                        timeToCatch: 400,
+                                        caughtPlayer: false,
+                                        catchCoordX: -1,
+                                        catchInit: false,
+                                        catchAnimation: false,
+                                        catchFinish: false,
+                                        exitTrajectory: [
+                                            [3, 5],
+                                            [2, 6],
+                                            [2, 7],
+                                            [3, 7],
+                                            [4, 6],
+                                            [5, 5],
+                                            [5, 4],
+                                            [4, 4]
+                                        ],
+                                        enterTrajectory: [
+                                            [0.08, 0.08],
+                                            [0.04, 0.04],
+                                            [0.04, 0.04],
+                                            [0.08, 0.08]
+                                        ]
+                                    });
+                                }
+                            }
+                            else {
+                                let numOfWaves = 1 + Math.floor(gameData.stage / 5);
+                                for (let i = 0; i < numOfWaves; i++) {
+                                    for (let k = 0; k < 5; k++) {
+                                        gameData.enemies.entities.push({
+                                            hp: 2,
+                                            type: 1,
+                                            img: gameData.images.enemies[1].idle[0],
+                                            hitImg: gameData.images.enemies[1].idle[1],
+                                            explosionImg: gameData.images.enemies[1].idle[0],
+                                            explosionFrame: 100,
+                                            enterDone: false,
+                                            onHold: 300,
+                                            x: -1,
+                                            y: -1,
+                                            endXIndex: k,
+                                            endYIndex: i,
+                                            projType: 1,
+                                            canShoot: false,
+                                            beamCooldown: 200,
+                                            canCatch: false,
+                                            timeToCatch: 100,
+                                            caughtPlayer: false,
+                                            catchCoordX: -1,
+                                            catchInit: false,
+                                            catchAnimation: false,
+                                            catchFinish: false,
+                                            exitTrajectory: [
+                                                [3, 5],
+                                                [2, 6],
+                                                [2, 7],
+                                                [3, 7],
+                                                [4, 6],
+                                                [5, 5],
+                                                [5, 4],
+                                                [4, 4]
+                                            ],
+                                            enterTrajectory: [
+                                                [0.04, 0.08],
+                                                [0.04, 0.08],
+                                                [0.04, 0.08],
+                                                [0.04, 0.08]
+                                            ]
+                                        });
+                                    }
+                                }
+                            }
+                        }
+                        gameData.enemies.countdown--;
+                    }
+                    else {
+                        gameData.stage++;
+                        document.querySelector("#data-stage").children[1].innerHTML = gameData.stage;
+                        gameData.enemies.countdown = 300;
+                    }
+                }
+            }
+        }
+        function collision() {
+            let shipSize = gameData.height / 20;
+            let enemySize = gameData.height / 15;
+            for (let i = 0; i < gameData.enemies.entities.length; i++) {
+                let currEnemy = gameData.enemies.entities[i];
+                for (let k = 0; k < gameData.projectiles.length; k++) {
+                    let currProj = gameData.projectiles[k];
+                    if (currProj.dir < 0) {
+                        if (currProj.type === 0) {
+                            let distX = Math.pow(((currProj.x - currEnemy.x) * gameData.width), 2);
+                            let distY = Math.pow(((currProj.y - currEnemy.y) * gameData.height), 2);
+                            let distance = Math.sqrt(distX + distY);
+                            if (distance < enemySize / 2) {
+                                currEnemy.hp--;
+                                currProj.dir = 0;
+                                currEnemy.img = gameData.images.enemies[0].hurt[0];
+                                if (currEnemy.hp > 0) currEnemy.onHold = 20;
+                                if (currEnemy.hp <= 0) {
+                                    currEnemy.img = gameData.images.enemies[0].idle[1];
+                                    currEnemy.onHold = 20;
+                                    currEnemy.explosionFrame = 50;
+                                    gameData.player.score += 50;
+                                    document.querySelector("#data-score").children[1].innerHTML = gameData.player.score;
+                                }
+                            }
+                        }
+                    }
+                    else {
+                        let distX = Math.pow(((currProj.x - gameData.player.x) * gameData.width), 2);
+                        let distY = Math.pow(((currProj.y - 1) * gameData.height), 2);
+                        let distance = Math.sqrt(distX + distY);
+                        if (distance < shipSize / 2) {
+                            if (gameData.player.iFrames === 0 && !gameData.player.dead) {
+                                gameData.player.dead = true;
+                                gameData.player.deathLength = 50;
+                                gameData.player.deadPart = [
+                                    { x: gameData.player.x, y: 1, o: 1, a: 225 * Math.PI / 180, s: 5 },
+                                    { x: gameData.player.x, y: 1, o: 1, a: 135 * Math.PI / 180, s: 5 },
+                                    { x: gameData.player.x, y: 1, o: 1, a: 270 * Math.PI / 180, s: 5 },
+                                    { x: gameData.player.x, y: 1, o: 1, a: 135 * Math.PI / 180, s: 5 },
+                                    { x: gameData.player.x, y: 1, o: 1, a: 270 * Math.PI / 180, s: 5 },
+                                    { x: gameData.player.x, y: 1, o: 1, a: 315 * Math.PI / 180, s: 5 }
+                                ]
+                            }
+                        }
+                    }
+                }
+
+                let distX = Math.pow(((currEnemy.x - gameData.player.x) * gameData.width), 2);
+                let distY = Math.pow(((currEnemy.y - 1) * gameData.height), 2);
+                let distance = Math.sqrt(distX + distY);
+                if (distance < shipSize / 2) {
+                    if (gameData.player.iFrames === 0 && !gameData.player.dead) {
+                        gameData.player.dead = true;
+                        gameData.player.deathLength = 50;
+                        gameData.player.deadPart = [
+                            { x: gameData.player.x, y: 1, o: 1, a: 225 * Math.PI / 180, s: 5 },
+                            { x: gameData.player.x, y: 1, o: 1, a: 135 * Math.PI / 180, s: 5 },
+                            { x: gameData.player.x, y: 1, o: 1, a: 270 * Math.PI / 180, s: 5 },
+                            { x: gameData.player.x, y: 1, o: 1, a: 135 * Math.PI / 180, s: 5 },
+                            { x: gameData.player.x, y: 1, o: 1, a: 270 * Math.PI / 180, s: 5 },
+                            { x: gameData.player.x, y: 1, o: 1, a: 315 * Math.PI / 180, s: 5 }
+                        ]
+                    }
+                }
+            }
+        }
+        function drawGame(ctx) {
+            ctx.clearRect(0, 0, gameData.width, gameData.height);
+            let shipSize = gameData.height / 20;
+            let enemySize = gameData.height / 15;
+            ctx.fillStyle = "rgba(255, 255, 255, 0.4)";
+            for (let i = 0; i < gameData.backParticles.length; i++) {
+                let particleX = Math.floor(gameData.backParticles[i].x * gameData.width);
+                let particleY = Math.floor(gameData.backParticles[i].y * gameData.height);
+                let particleR = gameData.backParticles[i].r;
+                ctx.beginPath();
+                ctx.arc(particleX, particleY, particleR, 0, 2 * Math.PI);
+                ctx.fill();
+            }
+
+            for (let i = 0; i < gameData.projectiles.length; i++) {
+                let projX = gameData.projectiles[i].x * gameData.width;
+                let projY = gameData.projectiles[i].y * gameData.height;
+                ctx.drawImage(gameData.projectiles[i].img, projX - shipSize / 10, projY - shipSize / 2.5, shipSize / 5, shipSize / 1.25);
+            }
+
+            for (let i = 0; i < gameData.enemies.entities.length; i++) {
+                let currEnemy = gameData.enemies.entities[i];
+                if (currEnemy.explosionFrame === 0) ctx.drawImage(currEnemy.img, currEnemy.x * gameData.width - enemySize / 2, currEnemy.y * gameData.height - enemySize / 2, enemySize, enemySize);
+                else {
+                    let explosionX = currEnemy.x * gameData.width - enemySize / 2;
+                    let explosionY = currEnemy.y * gameData.height - enemySize / 2;
+                    let explosionW = Math.pow(currEnemy.explosionFrame, 0.5);
+                    let explosionH = Math.pow(currEnemy.explosionFrame, 0.5);
+                    ctx.drawImage(currEnemy.explosionImg, explosionX - explosionW, explosionY - explosionH, explosionW * 2, explosionH * 2);
+                }
+            }
+
+            if (gameData.player.deadPart.length === 0) {
+                if (gameData.player.dual) ctx.drawImage(gameData.images.capturedShip, gameData.player.x * gameData.width - shipSize, gameData.height - shipSize * 3, shipSize * 2, shipSize * 2);
+                ctx.drawImage(gameData.images.ship, gameData.player.x * gameData.width - shipSize / 2, gameData.height - shipSize * 3, shipSize, shipSize);
+            }
+            else {
+                for (let i = 0; i < gameData.player.deadPart.length; i++) {
+                    let partX = gameData.player.deadPart[i].x * gameData.width;
+                    let partY = gameData.player.deadPart[i].y * gameData.height;
+                    let partO = gameData.player.deadPart[i].o;
+                    ctx.save();
+                    ctx.globalAlpha = partO;
+                    ctx.translate(partX, partY);
+                    ctx.rotate(gameData.player.deadPart[i].a);
+                    ctx.translate(-partX, -partY);
+                    ctx.drawImage(gameData.images.ship, partX - shipSize / 2, partY - shipSize * 3, shipSize, shipSize);
+                    ctx.restore();
+                }
+            }
+
+            if (gameData.player.cauthInBeam) {
+                let playerX = gameData.player.beamX * gameData.width;
+                let playerY = gameData.player.beamY * gameData.height;
+                ctx.drawImage(gameData.images.ship, playerX - shipSize / 2, playerY - shipSize * 3, shipSize, shipSize);
+                if (gameData.player.beamY < 1) ctx.drawImage(tBeam1F, playerX - shipSize / 10, playerY, shipSize / 5, gameData.height - playerY);
+            }
+        }
+        function gameEnd() {
+            gameData.gameOver = true;
+            if (!gameData.highscore) {
+                let highscore = false;
+                for (let i = 0; i < gameData.highscores.length; i++) {
+                    if (gameData.player.score > gameData.highscores[i].score) highscore = true;
+                }
+                if (!highscore && gameData.highscores.length < 10) highscore = true;
+                if (highscore) {
+                    openWindow(document.querySelector(".new-highscore-holder"));
+                    gameData.highscore = true;
+                }
+            }
+            let gameMsg = document.querySelector(".game-msg");
+            gameMsg.innerHTML = "GAME OVER<br>Press ENTER to restart<br>Press ESC to quit";
+            gameMsg.style.display = "flex";
+        }
+        document.onkeydown = (e) => {
+            if (e.keyCode === 37 || e.keyCode === 65) gameData.player.dirL = 1;
+            if (e.keyCode === 39 || e.keyCode === 68) gameData.player.dirR = 1;
+            if (e.keyCode === 32) {
+                if (!gameData.ingame) return;
+                if (!gameData.started) gameData.started = true;
+                if (!gameData.gameOver) {
+                    if (gameData.player.cooldown === 0) {
+                        gameData.projectiles.push({
+                            x: gameData.player.x,
+                            y: 1,
+                            dir: -1,
+                            type: 0,
+                            img: gameData.images.beamImgs[0]
+                        });
+                        if (gameData.player.dual) gameData.projectiles.push({
+                            x: gameData.player.x,
+                            y: 1,
+                            dir: -1,
+                            type: 0,
+                            img: gameData.images.beamImgs[1]
+                        });
+                        gameData.player.cooldown = 50;
+                    }
+                }
+                else if (gameData.highscore) {
+                    let newName = document.querySelector("#new-name");
+                    if (!newName.value) alert("You must enter a name!");
+                    else {
+                        let gameMsg = document.querySelector(".game-msg");
+                        gameMsg.innerHTML = "GAME OVER<br>Press ENTER to restart<br>Press ESC to quit";
+                        updateHighscore({ name: newName.value, score: gameData.player.score });
+                        closeWindow(document.querySelector(".new-highscore-holder"));
+                        gameMsg.style.display = "flex";
+                        gameData.highscore = false;
+                        newName.value = "";
+                    }
+                }
+                else {
+                    let gameMsg = document.querySelector(".game-msg");
+                    gameMsg.style.display = "none";
+                    initGame(true);
+                }
+            }
+            if (e.keyCode === 13) {
+                if (gameData.ingame) return;
+                if (!gameData.ingame) {
+                    if (gameData.initButton >= 0) document.querySelector(".init-button").click();
+                }
+                else {
+                    let gameMsg = document.querySelector(".game-msg");
+                    gameMsg.style.display = "none";
+                    initGame(true);
+                }
+            }
+            if (e.keyCode === 38) {
+                if (gameData.ingame) return;
+                let allButtons = document.querySelectorAll(".init-button");
+                if (gameData.initButton < 0) gameData.initButton = 0;
+                else {
+                    gameData.initButton--;
+                    if (gameData.initButton < 0) gameData.initButton = 0;
+                }
+                let selectedButton = document.querySelector(".selected-button");
+                if (selectedButton) selectedButton.className = "button init-button";
+                allButtons[gameData.initButton].className = "button init-button selected-button";
+            }
+            if (e.keyCode === 40) {
+                if (gameData.ingame) return;
+                let allButtons = document.querySelectorAll(".init-button");
+                if (gameData.initButton < 0) gameData.initButton = 0;
+                else {
+                    gameData.initButton++;
+                    if (gameData.initButton === allButtons.length) gameData.initButton = allButtons.length - 1;
+                }
+                let selectedButton = document.querySelector(".selected-button");
+                if (selectedButton) selectedButton.className = "button init-button";
+                allButtons[gameData.initButton].className = "button init-button selected-button";
+            }
+            if (e.keyCode === 80) {
+                if (!gameData.ingame) return;
+                gameData.paused = !gameData.paused;
+                let gameMsg = document.querySelector(".game-msg");
+                if (gameData.paused) {
+                    gameLoopStop = true;
+                    gameMsg.innerHTML = "PAUSED<br>Press P to unpause";
+                    gameMsg.style.display = "flex";
+                }
+                else {
+                    gameLoopStop = false;
+                    gameMsg.style.display = "none";
+                    window.requestAnimationFrame((currTime) => {
+                        let game = document.querySelector("#game");
+                        let ctx = game.getContext("2d");
+                        gameLoop(ctx, currTime, currTime);
+                    });
+                }
+            }
+            if (e.keyCode === 27) {
+                let gameMsg = document.querySelector(".game-msg");
+                if (!gameData.ingame) window.close();
+                else {
+                    gameData.ingame = false;
+                    gameLoopStop = true;
+                    document.querySelector(".game-body").style.display = "none";
+                    document.querySelector(".main-menu").style.display = "block";
+                    gameMsg.style.display = "none";
+                }
+            }
+        }
+        document.onkeyup = (e) => {
+            if (e.keyCode === 37 || e.keyCode === 65) gameData.player.dirL = 0;
+            if (e.keyCode === 39 || e.keyCode === 68) gameData.player.dirR = 0;
+        }
+        function updateHighscore(data) {
+            if (gameData.highscores.length < 10) {
+                gameData.highscores.push(data);
+                gameData.highscores.sort((a, b) => b.score - a.score);
+            }
+            else {
+                for (let i = 0; i < gameData.highscores.length; i++) {
+                    if (data.score > gameData.highscores[i].score) {
+                        gameData.highscores.splice(i, 0, data);
+                        gameData.highscores.pop();
+                        break;
+                    }
+                }
+            }
+            localStorage.setItem("highscores", JSON.stringify(gameData.highscores));
+        }
+        function updateHighScoreDisplay() {
+            let highscoreHolder = document.querySelector(".high-score-holder");
+            highscoreHolder.innerHTML = "";
+            if (gameData.highscores.length === 0) highscoreHolder.innerHTML = "No highscores yet!";
+            for (let i = 0; i < gameData.highscores.length; i++) {
+                let highScore = document.createElement("div");
+                highScore.className = "high-score";
+                highScore.innerHTML = "<div class='high-score-data'>" + gameData.highscores[i].name + "</div><div class='high-score-data'>" + gameData.highscores[i].score + "</div>";
+                highscoreHolder.appendChild(highScore);
+            }
+        }
+        function checkWinCondition(score) {
+            if (score >= 1000) {
+                const popup = document.getElementById('congratulations-popup');
+                popup.style.display = 'block';
+                gameLoopStop = true;  // Stop the game loop
+            }
+        }
+
+        // Event listener to handle click on the popup button
+        document.querySelector('.congratulations-popup .button').addEventListener('click', function() {
+            const popup = document.getElementById('congratulations-popup');
+            popup.style.display = 'none';
+            initGame(true);  // Restart the game
+        });
+
+        const tBeam1F = new Image();
+        tBeam1F.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAoAAAAHgAQMAAABsb9FQAAAAA1BMVEXk5ueAqErbAAAASElEQVR42mJk+P///36BBQn6gwwMjIxQFCgUCBQoFAgUKBQIFCgUCBQoFAgUKBQIFCgUCBQoFAgUKBQIFCgUCBQoFAgUKBQQwTi0m9cdMpkAAAAASUVORK5CYII=";
+        const tBeam2F = new Image();
+        tBeam2F.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAoAAAAHgAQMAAABsb9FQAAAAA1BMVEU0guk+rFzLAAAASElEQVR42mJk+P///36BBQn6gwwMjIxQFCgUCBQoFAgUKBQIFCgUCBQoFAgUKBQIFCgUCBQoFAgUKBQIFCgUCBQoFAgUKBQIFCgUCBQoFAgUKBQQwTi0m9cdMpkAAAAASUVORK5CYII=";
+        const tBeam3U = new Image();
+        tBeam3U.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAoAAAAHgAQMAAABsb9FQAAAAA1BMVEU0guk+rFzLAAAASElEQVR42mJk+P///36BBQn6gwwMjIxQFCgUCBQoFAgUKBQIFCgUCBQoFAgUKBQIFCgUCBQoFAgUKBQIFCgUCBQoFAgUKBQIFCgUCBQoFAgUKBQQwTi0m9cdMpkAAAAASUVORK5CYII=";
+        const enemy1Hurt1 = new Image();
+        enemy1Hurt1.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAoAAAAHgAQMAAABsb9FQAAAAA1BMVEU0guk+rFzLAAAASElEQVR42mJk+P///36BBQn6gwwMjIxQFCgUCBQoFAgUKBQIFCgUCBQoFAgUKBQIFCgUCBQoFAgUKBQIFCgUCBQoFAgUKBQIFCgUCBQoFAgUKBQQwTi0m9cdMpkAAAAASUVORK5CYII=";
+        const enemy1Hurt2 = new Image();
+        enemy1Hurt2.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAoAAAAHgAQMAAABsb9FQAAAAA1BMVEU0guk+rFzLAAAASElEQVR42mJk+P///36BBQn6gwwMjIxQFCgUCBQoFAgUKBQIFCgUCBQoFAgUKBQIFCgUCBQoFAgUKBQIFCgUCBQoFAgUKBQIFCgUCBQoFAgUKBQIFCgUCBQoFAgUKBQQwTi0m9cdMpkAAAAASUVORK5CYII=";
+        const enemy1Idle1 = new Image();
+        enemy1Idle1.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAoAAAAHgAQMAAABsb9FQAAAAA1BMVEU0guk+rFzLAAAASElEQVR42mJk+P///36BBQn6gwwMjIxQFCgUCBQoFAgUKBQIFCgUCBQoFAgUKBQIFCgUCBQoFAgUKBQIFCgUCBQoFAgUKBQIFCgUCBQoFAgUKBQQwTi0m9cdMpkAAAAASUVORK5CYII=";
+        const enemy1Idle2 = new Image();
+        enemy1Idle2.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAoAAAAHgAQMAAABsb9FQAAAAA1BMVEU0guk+rFzLAAAASElEQVR42mJk+P///36BBQn6gwwMjIxQFCgUCBQoFAgUKBQIFCgUCBQoFAgUKBQIFCgUCBQoFAgUKBQIFCgUCBQoFAgUKBQIFCgUCBQoFAgUKBQIFCgUCBQoFAgUKBQQwTi0m9cdMpkAAAAASUVORK5CYII=";
+        const enemy2Idle1 = new Image();
+        enemy2Idle1.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAoAAAAHgAQMAAABsb9FQAAAAA1BMVEU0guk+rFzLAAAASElEQVR42mJk+P///36BBQn6gwwMjIxQFCgUCBQoFAgUKBQIFCgUCBQoFAgUKBQIFCgUCBQoFAgUKBQIFCgUCBQoFAgUKBQIFCgUCBQoFAgUKBQIFCgUCBQoFAgUKBQQwTi0m9cdMpkAAAAASUVORK5CYII=";
+        const enemy2Idle2 = new Image();
+        enemy2Idle2.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAoAAAAHgAQMAAABsb9FQAAAAA1BMVEU0guk+rFzLAAAASElEQVR42mJk+P///36BBQn6gwwMjIxQFCgUCBQoFAgUKBQIFCgUCBQoFAgUKBQIFCgUCBQoFAgUKBQIFCgUCBQoFAgUKBQIFCgUCBQoFAgUKBQIFCgUCBQoFAgUKBQQwTi0m9cdMpkAAAAASUVORK5CYII=";
+        const playerImg1 = new Image();
+        playerImg1.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAoAAAAHgAQMAAABsb9FQAAAAA1BMVEU0guk+rFzLAAAASElEQVR42mJk+P///36BBQn6gwwMjIxQFCgUCBQoFAgUKBQIFCgUCBQoFAgUKBQIFCgUCBQoFAgUKBQIFCgUCBQoFAgUKBQIFCgUCBQoFAgUKBQIFCgUCBQoFAgUKBQQwTi0m9cdMpkAAAAASUVORK5CYII=";
+        const playerImg2 = new Image();
+        playerImg2.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAoAAAAHgAQMAAABsb9FQAAAAA1BMVEU0guk+rFzLAAAASElEQVR42mJk+P///36BBQn6gwwMjIxQFCgUCBQoFAgUKBQIFCgUCBQoFAgUKBQIFCgUCBQoFAgUKBQIFCgUCBQoFAgUKBQIFCgUCBQoFAgUKBQIFCgUCBQoFAgUKBQQwTi0m9cdMpkAAAAASUVORK5CYII=";
+    </script>
+</body>
+</html>
